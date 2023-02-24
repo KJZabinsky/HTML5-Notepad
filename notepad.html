@@ -73,7 +73,6 @@ textarea {
 const text = document.getElementById("text");
 const fontSelect = document.getElementById("font-select");
 const themeSelect = document.getElementById("theme-select");
-const boldButton = document.getElementById("bold-button");
 const clearButton = document.getElementById("clear-button");
 const saveButton = document.getElementById("save-button");
 const copyButton = document.getElementById("copy-button");
@@ -104,12 +103,6 @@ window.addEventListener("load", () => {
 	const theme = localStorage.getItem("notepad-theme") || "#293437";
 	document.body.style.backgroundColor = theme;
 	themeSelect.value = theme;
-});
-
-// Toggle bold font weight when bold button is clicked
-boldButton.addEventListener("click", () => {
-	const fontWeight = text.style.fontWeight === "bold" ? "normal" : "bold";
-	text.style.fontWeight = fontWeight;
 });
 
 // Clear textarea when clear button is clicked
@@ -148,8 +141,8 @@ copyButton.addEventListener("click", () => {
 	// Copy the text to the clipboard
 	document.execCommand("copy");
 });
-</script>
-<script>
+
+// Download latest update from GitHub when download button is clicked
 function downloadFile() {
   fetch('https://raw.githubusercontent.com/KJZabinsky/HTML5-Notepad/main/notepad.html')
     .then(response => response.blob())
@@ -157,13 +150,25 @@ function downloadFile() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'indexcoder.html';
+      a.download = 'notepad.html';
       document.body.appendChild(a);
       a.click();
       a.remove();
       URL.revokeObjectURL(url);
     });
 }
+// Save font to localStorage when user selects a new option
+fontSelect.addEventListener("change", () => {
+	localStorage.setItem("notepad-font", fontSelect.value);
+});
+
+// Load font from localStorage on page load
+window.addEventListener("load", () => {
+	const font = localStorage.getItem("notepad-font") || "Arial";
+	text.style.fontFamily = font;
+	fontSelect.value = font;
+});
+
 </script>
 </body>
 </html>
