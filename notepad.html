@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<style>
+body {
+	margin: 0;
+	padding: 0;
+	font-family: Arial, sans-serif;
+	background-color: #293437;
+}
+
+.notepad {
+	margin: 50px auto;
+	max-width: 800px;
+	background-color: gray;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.notepad-header {
+	padding: 10px;
+	background-color: #2B2B2B;
+	color: #FFF;
+}
+
+.notepad-header h1 {
+	margin: 0;
+}
+
+.notepad-body {
+	padding: 10px;
+}
+
+textarea {
+	width: 97.5%;
+	height: 500px;
+	padding: 10px;
+	font-size: 16px;
+	line-height: 1.5;
+	border: none;
+	resize: none;
+}
+</style>
+<html>
+<head>
+	<title>Notepad</title>
+</head>
+<body>
+	<div class="notepad">
+		<div class="notepad-header">
+			<h1>Notepad</h1>
+		</div>
+		<div class="notepad-body">
+			<textarea id="text"></textarea>
+            <button id="clear-button">Clear</button>
+            <button id="save-button">Save</button>
+            <button id="copy-button">Copy</button>
+				<select id="font-select">
+					<option value="Arial">Arial</option>
+					<option value="Calibri">Calibri</option>
+					<option value="Comic Sans MS">Comic Sans MS</option>
+					<option value="Times New Roman">Times New Roman</option>
+					<option value="Verdana">Verdana</option>
+				</select>
+                				<select id="theme-select">
+					<option value="#293437">Dark Blue (Default)</option>
+					<option value="#808080">Gray</option>
+					<option value="#FF0000">Red</option>
+					<option value="#0000FF">Blue</option>
+					<option value="#Ffc0cb">Pink</option>
+				</select>
+                <button onclick="downloadFile()">Download Latest Update</button>
+		</div>
+	</div>
+	<script>
+const text = document.getElementById("text");
+const fontSelect = document.getElementById("font-select");
+const themeSelect = document.getElementById("theme-select");
+const boldButton = document.getElementById("bold-button");
+const clearButton = document.getElementById("clear-button");
+const saveButton = document.getElementById("save-button");
+const copyButton = document.getElementById("copy-button");
+
+// Save text to localStorage when user types
+text.addEventListener("input", () => {
+	localStorage.setItem("notepad-text", text.value);
+});
+
+// Load text from localStorage on page load
+window.addEventListener("load", () => {
+	text.value = localStorage.getItem("notepad-text") || "";
+});
+
+// Change font when user selects a new option from the dropdown
+fontSelect.addEventListener("change", () => {
+	text.style.fontFamily = fontSelect.value;
+});
+
+// Change theme when user selects a new option from the dropdown
+themeSelect.addEventListener("change", () => {
+	document.body.style.backgroundColor = themeSelect.value;
+	localStorage.setItem("notepad-theme", themeSelect.value);
+});
+
+// Load theme from localStorage on page load
+window.addEventListener("load", () => {
+	const theme = localStorage.getItem("notepad-theme") || "#293437";
+	document.body.style.backgroundColor = theme;
+	themeSelect.value = theme;
+});
+
+// Toggle bold font weight when bold button is clicked
+boldButton.addEventListener("click", () => {
+	const fontWeight = text.style.fontWeight === "bold" ? "normal" : "bold";
+	text.style.fontWeight = fontWeight;
+});
+
+// Clear textarea when clear button is clicked
+clearButton.addEventListener("click", () => {
+	text.value = "";
+	localStorage.removeItem("notepad-text");
+});
+
+// Download text as a plain text file when save button is clicked
+saveButton.addEventListener("click", () => {
+	// Create a new blob with the text content
+	const blob = new Blob([text.value], { type: "text/plain" });
+	
+	// Create a new URL for the blob
+	const url = URL.createObjectURL(blob);
+	
+	// Create a new <a> element to trigger the download
+	const a = document.createElement("a");
+	a.href = url;
+	a.download = "notepad.txt";
+	
+	// Trigger the download
+	document.body.appendChild(a);
+	a.click();
+	document.body.removeChild(a);
+	
+	// Revoke the URL to free up memory
+	URL.revokeObjectURL(url);
+});
+
+// Copy text to clipboard when copy button is clicked
+copyButton.addEventListener("click", () => {
+	// Select the text in the textarea
+	text.select();
+	
+	// Copy the text to the clipboard
+	document.execCommand("copy");
+});
+</script>
+<script>
+function downloadFile() {
+  fetch('https://raw.githubusercontent.com/KJZabinsky/HTML5-Message-Encode-Decoder/main/indexcoder.html')
+    .then(response => response.blob())
+    .then(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'indexcoder.html';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+}
+</script>
+</body>
+</html>
